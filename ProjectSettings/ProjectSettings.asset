@@ -524,7 +524,10 @@ PlayerSettings:
       m_Height: 720
       m_Kind: 1
       m_SubKind: 
-  m_BuildTargetBatching: []
+  m_BuildTargetBatching:
+  - m_BuildTarget: Standalone
+    m_StaticBatching: 1
+    m_DynamicBatching: 0
   m_BuildTargetShaderSettings: []
   m_BuildTargetGraphicsJobs:
   - m_BuildTarget: MacStandaloneSupport
@@ -942,11 +945,11 @@ PlayerSettings:
   captureStartupLogs: {}
   activeInputHandler: 2
   windowsGamepadBackendHint: 0
-  cloudProjectId: 793b5ca3-eebe-4d55-a0fe-862f933ffcfd
+  cloudProjectId: 5f8c0f64-59d9-4852-9b7b-341fe1c6239a
   framebufferDepthMemorylessMode: 0
   qualitySettingsNames: []
-  projectName: multiFpsSample
-  organizationId: rhavkd33
+  projectName: MarketPlaceUGS
+  organizationId: beerandcheese
   cloudEnabled: 0
   legacyClampBlendShapeWeights: 0
   hmiLoadingImage: {fileID: 0}
