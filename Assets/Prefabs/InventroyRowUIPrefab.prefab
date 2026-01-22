@@ -633,6 +633,7 @@ MonoBehaviour:
   titleText: {fileID: 4538054011960909027}
   instanceText: {fileID: 6138914432445312305}
   optionText: {fileID: 4821184872684024088}
+  iconImage: {fileID: 3351820109266088237}
   sellBtn: {fileID: 3987277122790305201}
 --- !u!1 &8126470051288682095
 GameObject:

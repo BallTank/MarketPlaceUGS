@@ -634,6 +634,7 @@ MonoBehaviour:
   priceText: {fileID: 6138914432445312305}
   buyBtn: {fileID: 3987277122790305201}
   cancelBtn: {fileID: 4759205443106475196}
+  iconImage: {fileID: 3351820109266088237}
 --- !u!1 &7829282384007182308
 GameObject:
   m_ObjectHideFlags: 0

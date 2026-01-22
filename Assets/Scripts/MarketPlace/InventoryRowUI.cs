@@ -11,6 +11,7 @@ public class InventoryRowUI : MonoBehaviour
     [SerializeField] private TextMeshProUGUI titleText;
     [SerializeField] private TextMeshProUGUI instanceText;
     [SerializeField] private TextMeshProUGUI optionText;
+    [SerializeField] private Image iconImage;
     [SerializeField] private Button sellBtn;
 
     private string playersInventoryItemId;
@@ -19,6 +20,8 @@ public class InventoryRowUI : MonoBehaviour
 
     public void Bind(
         PlayersInventoryItem item,
+        string displayName,
+        Sprite icon,
         Func<int> getSellPrice,
         Func<string, int, Task> createListingFunc)
     {
@@ -30,7 +33,14 @@ public class InventoryRowUI : MonoBehaviour
         getPrice = getSellPrice;
         createListingAsync = createListingFunc;
 
-        if (titleText != null) titleText.text = item.InventoryItemId;
+        if (titleText != null) {
+            titleText.text = !string.IsNullOrEmpty(displayName) ? displayName : item.InventoryItemId;
+        }
+
+        if(iconImage != null) {
+            iconImage.sprite = icon;
+            iconImage.gameObject.SetActive(icon != null);
+        }
 
         string shortInstance = !string.IsNullOrEmpty(playersInventoryItemId) && playersInventoryItemId.Length > 8
             ? playersInventoryItemId.Substring(0, 8)

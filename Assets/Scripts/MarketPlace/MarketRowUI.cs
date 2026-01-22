@@ -9,6 +9,7 @@ public class MarketRowUI : MonoBehaviour
     [SerializeField] private TextMeshProUGUI priceText;
     [SerializeField] private Button buyBtn;
     [SerializeField] private Button cancelBtn;
+    [SerializeField] private Image iconImage;
 
     private string listingId;
     private Func<string, System.Threading.Tasks.Task> buyAsync;
@@ -16,6 +17,8 @@ public class MarketRowUI : MonoBehaviour
 
     public void Bind(
         PortfolioMarketDemo.ListingDto listing,
+        string displayName,
+        Sprite iconSprite,
         Func<string, System.Threading.Tasks.Task> buyFunc,
         Func<string, System.Threading.Tasks.Task> cancelFunc)
     {
@@ -23,8 +26,13 @@ public class MarketRowUI : MonoBehaviour
         buyAsync = buyFunc;
         cancelAsync = cancelFunc;
 
-        if (titleText != null) titleText.text = listing.inventoryItemId;
+        if (titleText != null) titleText.text = !string.IsNullOrEmpty(displayName) ? displayName : listing.inventoryItemId;
         if (priceText != null) priceText.text = $"{listing.price} {listing.currencyId}";
+
+        if (iconImage != null) {
+            iconImage.sprite = iconSprite;
+            iconImage.gameObject.SetActive(iconImage != null);
+        }
 
         if (buyBtn != null)
         {

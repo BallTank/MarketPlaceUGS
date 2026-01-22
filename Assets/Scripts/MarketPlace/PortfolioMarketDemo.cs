@@ -15,7 +15,7 @@ public class PortfolioMarketDemo : MonoBehaviour
     [SerializeField] private string currencyId = "COIN";
 
     [Header("Random Give Pool (Resource IDs)")]
-    [SerializeField] private string[] randomGiveItemIds = { "SWORD", "REDPOTION", "BLUEPOTION" };
+    //[SerializeField] private string[] randomGiveItemIds = { "SWORD", "REDPOTION", "BLUEPOTION" };
 
     [Header("Top UI")]
     [SerializeField] private TextMeshProUGUI debugLine;
@@ -38,6 +38,9 @@ public class PortfolioMarketDemo : MonoBehaviour
     [Header("Market Options")]
     [SerializeField] private int marketLimit = 30;
     [SerializeField] private string marketSort = "NEWEST"; // NEWEST / PRICE_ASC / PRICE_DESC
+
+    [Header("Visuals")]
+    [SerializeField] private ItemVisualData itemVisuals;
 
     private bool isEconomyConfigSynced = false;
 
@@ -169,7 +172,20 @@ public class PortfolioMarketDemo : MonoBehaviour
                 }
 
                 InventoryRowUI row = Instantiate(inventoryRowPrefab, inventoryContent);
-                row.Bind(item, GetSellPrice, CreateListingAsync);
+
+                Sprite icon = null;
+                string displayName = item.InventoryItemId;
+
+                if(itemVisuals != null) {
+                    var mapping = itemVisuals.GetMapping(item.InventoryItemId);
+                    if(mapping != null) {
+                        icon = mapping.icon;
+                        Debug.Log($"이미지 이름: {icon.name}");
+                        if (!string.IsNullOrEmpty(mapping.itemName)) displayName = mapping.itemName;
+                    }
+                }
+
+                row.Bind(item, displayName, icon, GetSellPrice, CreateListingAsync);
             }
 
             SetMessage($"인벤 로드 완료: {items.Count}개");
@@ -194,27 +210,35 @@ public class PortfolioMarketDemo : MonoBehaviour
 
         await EnsureEconomyConfigSyncedAsync();
 
-        if (randomGiveItemIds == null || randomGiveItemIds.Length == 0)
-        {
-            SetMessage("randomGiveItemIds 비어있음");
-            return;
-        }
+       
 
-        string templateId = PickRandomId(randomGiveItemIds);
+        string templateId = null;
         Debug.Log($"[GiveRandom] templateId='{templateId}'");
 
         try
         {
-            PlayersInventoryItem created =
-                await EconomyService.Instance.PlayerInventory.AddInventoryItemAsync(templateId);
+            if (itemVisuals == null || itemVisuals.items == null || itemVisuals.items.Count == 0) {
+                SetMessage("오류: Item Visuals가 연결되지 않았거나 비었습니다.");
+                Debug.LogError("Inspector에서 PortfolioMarketDemo의 'Item Visuals' 필드에 ScriptableObject를 연결했는지 확인하세요.");
+                return;
+            }
 
-            SetMessage($"지급 성공: {created.InventoryItemId} / {created.PlayersInventoryItemId}");
+            SetMessage("랜덤 아이템 지급 요청 중...");
+
+            int randomIndex = UnityEngine.Random.Range(0, itemVisuals.items.Count);
+            string resourceId = itemVisuals.items[randomIndex].id;
+
+            PlayersInventoryItem item = await EconomyService.Instance.PlayerInventory.AddInventoryItemAsync(resourceId);
+ 
+            SetMessage($"지급 성공: {resourceId}");
+            Debug.Log($"[GiveRandomItemAsync] {resourceId} 지급완료. InstanceID {item.PlayersInventoryItemId}");
+
             await RefreshInventoryAsync();
         }
         catch (EconomyException e)
         {
             Debug.LogException(e);
-            SetMessage($"지급 실패: '{templateId}' (Resource ID/Publish/환경 확인)");
+            SetMessage($"지급 실패: '{templateId}' (Resource ID 확인)");
         }
         catch (Exception e)
         {
@@ -291,7 +315,20 @@ public class PortfolioMarketDemo : MonoBehaviour
                 }
 
                 MarketRowUI row = Instantiate(marketRowPrefab, marketContent);
-                row.Bind(listing, BuyListingAsync, CancelListingAsync);
+
+                Sprite icon = null;
+                string displayName = listing.inventoryItemId;
+                
+                if(itemVisuals != null) {
+                    var mapping = itemVisuals.GetMapping(listing.inventoryItemId);
+                    if(mapping != null) {
+                        icon = mapping.icon;
+                        if (!string.IsNullOrEmpty(mapping.itemName)) displayName = mapping.itemName;
+                    }
+                }
+
+
+                row.Bind(listing, displayName, icon, BuyListingAsync, CancelListingAsync);
             }
 
             SetMessage($"거래소 로드: {res.listings.Length}개");
