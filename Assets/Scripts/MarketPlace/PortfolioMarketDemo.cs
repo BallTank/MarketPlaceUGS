@@ -15,7 +15,6 @@ public class PortfolioMarketDemo : MonoBehaviour
     [SerializeField] private string currencyId = "COIN";
 
     [Header("Random Give Pool (Resource IDs)")]
-    //[SerializeField] private string[] randomGiveItemIds = { "SWORD", "REDPOTION", "BLUEPOTION" };
 
     [Header("Top UI")]
     [SerializeField] private TextMeshProUGUI debugLine;
@@ -180,7 +179,6 @@ public class PortfolioMarketDemo : MonoBehaviour
                     var mapping = itemVisuals.GetMapping(item.InventoryItemId);
                     if(mapping != null) {
                         icon = mapping.icon;
-                        Debug.Log($"이미지 이름: {icon.name}");
                         if (!string.IsNullOrEmpty(mapping.itemName)) displayName = mapping.itemName;
                     }
                 }
