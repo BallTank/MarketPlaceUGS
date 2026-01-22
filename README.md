@@ -12,6 +12,7 @@
 3. 아래 정보를 입력합니다:
    * **ID:** UGS Economy에 등록된 Resource ID (예: `PAINT_RED`)
    * **Item Name:** 게임 내 UI에 표시될 이름 (예: `빨간 물감`)
+   * **Price:** 게임 내 UI에 표시될 가격 (예: `Coin: 140`)
    * **Icon:** 사용할 Sprite 이미지를 드래그 앤 드롭
 4. 게임을 실행하면 자동으로 인벤토리와 상점에 반영됩니다.
 
