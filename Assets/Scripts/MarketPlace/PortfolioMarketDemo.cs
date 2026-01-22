@@ -13,6 +13,7 @@ public class PortfolioMarketDemo : MonoBehaviour
 {
     [Header("Economy IDs")]
     [SerializeField] private string currencyId = "COIN";
+    [SerializeField] private int defaultPrice = 100;
 
     [Header("Random Give Pool (Resource IDs)")]
     //[SerializeField] private string[] randomGiveItemIds = { "SWORD", "REDPOTION", "BLUEPOTION" };
@@ -91,11 +92,15 @@ public class PortfolioMarketDemo : MonoBehaviour
         Debug.Log(message);
     }
 
-    private int GetSellPrice()
+    private int GetIntemPriceFromData(string resourceId)
     {
-        if (priceInput == null) return 100;
-        if (int.TryParse(priceInput.text, out int price)) return Mathf.Max(1, price);
-        return 100;
+        if(itemVisuals != null) {
+            var mapping = itemVisuals.GetMapping(resourceId);
+            if(mapping != null && mapping.price > 0) {
+                return mapping.price;
+            }
+        }
+        return defaultPrice;
     }
 
     // -------------------------
@@ -175,6 +180,7 @@ public class PortfolioMarketDemo : MonoBehaviour
 
                 Sprite icon = null;
                 string displayName = item.InventoryItemId;
+                int price = defaultPrice;
 
                 if(itemVisuals != null) {
                     var mapping = itemVisuals.GetMapping(item.InventoryItemId);
@@ -182,10 +188,12 @@ public class PortfolioMarketDemo : MonoBehaviour
                         icon = mapping.icon;
                         Debug.Log($"이미지 이름: {icon.name}");
                         if (!string.IsNullOrEmpty(mapping.itemName)) displayName = mapping.itemName;
+
+                        if (mapping.price > 0) price = mapping.price;
                     }
                 }
 
-                row.Bind(item, displayName, icon, GetSellPrice, CreateListingAsync);
+                row.Bind(item, displayName, icon, price, CreateListingAsync);
             }
 
             SetMessage($"인벤 로드 완료: {items.Count}개");
@@ -318,7 +326,7 @@ public class PortfolioMarketDemo : MonoBehaviour
 
                 Sprite icon = null;
                 string displayName = listing.inventoryItemId;
-                
+
                 if(itemVisuals != null) {
                     var mapping = itemVisuals.GetMapping(listing.inventoryItemId);
                     if(mapping != null) {
