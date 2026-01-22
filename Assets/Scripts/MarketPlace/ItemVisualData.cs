@@ -11,7 +11,8 @@ public class ItemVisualData : ScriptableObject {
     [Serializable]
     public class ItemMapping {
         public string id;   // USG resouce ID
-        public string itemName; 
+        public string itemName;
+        public int price;
         public Sprite icon;
     }
 

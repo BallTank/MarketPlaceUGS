@@ -34,8 +34,8 @@ public class CloudSaveTest : MonoBehaviour
     public async Task LoadItem() //로그인 성공시 불림
     {
         /*    var playerData = await CloudSaveService.Instance.Data.Player.LoadAsync(new HashSet<string> {
-              "coin","items"});
-            if (playerData.TryGetValue("coin", out var keyName))
+              "price","items"});
+            if (playerData.TryGetValue("price", out var keyName))
             {
                 Debug.Log($"keyName: {keyName.Value.GetAs<string>()}");
                 coins = System.Int32.Parse(keyName.Value.GetAs<string>());

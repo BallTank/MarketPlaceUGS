@@ -11,18 +11,19 @@ public class InventoryRowUI : MonoBehaviour
     [SerializeField] private TextMeshProUGUI titleText;
     [SerializeField] private TextMeshProUGUI instanceText;
     [SerializeField] private TextMeshProUGUI optionText;
+    [SerializeField] private TextMeshProUGUI priceText;
     [SerializeField] private Image iconImage;
     [SerializeField] private Button sellBtn;
 
     private string playersInventoryItemId;
-    private Func<int> getPrice;
+    private int sellPrice;
     private Func<string, int, Task> createListingAsync;
 
     public void Bind(
         PlayersInventoryItem item,
         string displayName,
         Sprite icon,
-        Func<int> getSellPrice,
+        int price,
         Func<string, int, Task> createListingFunc)
     {
         // ★ 디버그: 전달받은 값 확인
@@ -30,7 +31,7 @@ public class InventoryRowUI : MonoBehaviour
         Debug.Log($"[InventoryRowUI.Bind] PlayersInventoryItemId: {item.PlayersInventoryItemId}");
 
         playersInventoryItemId = item.PlayersInventoryItemId;
-        getPrice = getSellPrice;
+        sellPrice = price;
         createListingAsync = createListingFunc;
 
         if (titleText != null) {
@@ -42,9 +43,15 @@ public class InventoryRowUI : MonoBehaviour
             iconImage.gameObject.SetActive(icon != null);
         }
 
+        if(priceText != null) {
+            priceText.text = $"Coin: {sellPrice.ToString()}"; 
+        }
+
         string shortInstance = !string.IsNullOrEmpty(playersInventoryItemId) && playersInventoryItemId.Length > 8
             ? playersInventoryItemId.Substring(0, 8)
             : playersInventoryItemId ?? "(null)";
+
+        
 
         if (instanceText != null) instanceText.text = $"instance: {shortInstance}";
 
@@ -74,10 +81,10 @@ public class InventoryRowUI : MonoBehaviour
             return;
         }
 
-        int price = getPrice != null ? getPrice.Invoke() : 100;
-        Debug.Log($"[SellAsync] Calling createListingAsync with ID: {playersInventoryItemId}, Price: {price}");
+        
+        Debug.Log($"[SellAsync] Calling createListingAsync with ID: {playersInventoryItemId}, Price: {sellPrice}");
 
-        await createListingAsync.Invoke(playersInventoryItemId, price);
+        await createListingAsync.Invoke(playersInventoryItemId, sellPrice);
     }
 
     private static string TryGetString(Dictionary<string, object> data, string key, string defaultValue)
